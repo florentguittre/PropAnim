@@ -1,0 +1,92 @@
+/* ALL THE PAGES */
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background: black;
+    font-family: "Montserrat", sans-serif;
+    color: white;
+}
+
+.wrapper {
+    padding: 2.5rem 5%;
+    color: white;
+    text-align: center;
+}
+
+.bgGrey {
+    border-radius: 15px;
+    background: #181818;
+    margin: 3em 3em 3em 3em;
+    padding: 2em 2em 2em 2em;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.title {
+    font-size: 3rem;
+    padding-bottom: 1rem;
+}
+
+/* PROPAGATION CONTROLS BUTTONS */
+
+.fmDesc {
+    padding-top: 1em;
+}
+
+.playBtn {
+    cursor: pointer;
+}
+
+.dpStart, .dpEnd {
+    background: white;
+}
+
+/* FRANCE MAP */
+
+.txIncidImg {
+    margin: 15px 0;
+    width: 25%;
+}
+
+svg {
+    display: block;
+    margin: auto;
+    fill: #fafafa;
+    stroke: white;
+    stroke-width: 0.25px;
+    padding: 1rem 0;
+}
+
+.fullFranceMap {
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.refreshedDate {
+    font-size: 12.5px;
+}
+
+.depMap {
+    display: flex;
+    width: 50%;
+}
+
+.omMap {
+    display: flex;
+    margin-bottom: -100px;
+}
+
+.omMap svg {
+    width: 50%;
+    height: 50%;
+}
