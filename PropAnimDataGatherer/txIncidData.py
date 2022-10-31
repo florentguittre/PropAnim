@@ -6,7 +6,7 @@ data = json.load(f)
 f.close()
 
 if data == {}:
-    date_ = int(datetime(2019, 5, 19).timestamp())
+    date_ = int(datetime(2020, 5, 19).timestamp())
 else:
     date_ = list(data)[-1]
     date_ = int(datetime.strptime(date_, "%Y-%m-%d").timestamp())
@@ -17,13 +17,15 @@ currentMonth = currentDatetime.month
 currentYear = currentDatetime.year
 stop_date = int(datetime(currentYear, currentMonth, currentDay).timestamp())
 stop_date -= 86400 * 5
-# 5 days are being substraced because data are available at D-5
+# 5 days are being substraced because data are available at D-6
 daysLeft = int((stop_date - date_) / 86400)
+print("daysLeft: " + str(daysLeft))
 
 for i in range(daysLeft):
     temp_data = []
     unixtime = date_ + ((i + 1) * 86400)
     dayToRetrieve = datetime.fromtimestamp(unixtime).strftime("%d-%m-%Y")
+    #print("dayToRetrieve: " + str(dayToRetrieve))
     dayToRetrieveChanged = datetime.strptime(dayToRetrieve, "%d-%m-%Y").strftime("%Y-%m-%d")
     x = requests.get(
         "https://coronavirusapifr.herokuapp.com/data/departements-by-date/" + dayToRetrieve

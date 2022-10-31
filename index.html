@@ -1,4 +1,64 @@
-<div class="fullFranceMap">
+<!--
+API UTILISÉE
+https://github.com/florianzemma/CoronavirusAPI-France
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link type="image/png" href="#" rel="icon">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropAnim | France</title>
+    <link  rel="stylesheet" href="https://a.flguitt.com/base.css"></link>
+    <link rel="stylesheet" href="style.css"></link>
+    <script src="functions.js"></script>
+    <script src="main.js" defer></script>
+</head>
+<body>
+<div class="wrapper">
+    <h1 class="title">PropAnim</h1>
+    <p class="warning">
+        ⚠️ Les dates non disponibles ne peuvent pas être désactivées sur Safari.<br>
+        ⚠️ Si vous entrez une date non enregistrée, elle sera remplacée par la date la plus proche
+        (la première ou la dernière disponible). <br> La date se mettra donc à jour automatiquement,
+        sauf sur Safari.
+    </p>
+    <div class="propControls">
+        <span class="startDate">
+            ⬅️ Date de début
+            <input class="dpStart" type="date">
+        </span>
+        <br>
+        <span class="endDate">
+            ➡️ Date de fin
+            <input class="dpEnd" type="date">
+        </span>
+        <br>
+        <span class="speed">
+            📺 Vitesse de rafraichissement (Hz)
+            <input class="dpSpeed" type="number" value="8" min="1" max="8">
+        </span>
+        <br>
+        <span class="loop">
+            🔁 En boucle
+            <input class="dpLoop" type="checkbox">
+        </span>
+        <br>
+        <span class="playBtn">
+                Jouer
+        </span>
+    </div>
+    <div class="fmDesc">
+        <p class="refreshedDate"></p>
+        <img class="txIncidImg"
+        src="indicateur_taux_incidence_departement.png"
+        alt="tableau des couleurs des taux d'incidence">
+        <p class="hoveredDep"></p>
+        <p class="currentDisplayedDay"></p>
+    </div>
+    <div class="fullFranceMap">
     <svg class="depMap" xmlns="http://www.w3.org/2000/svg" xmlns:amcharts="http://amcharts.com/ammap"
     xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 625 590">
         <g>
@@ -142,4 +202,7 @@
             </svg>
         </div>
     </div>
+    </div>
 </div>
+</body>
+</html>

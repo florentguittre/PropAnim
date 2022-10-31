@@ -1,66 +1,64 @@
 // ROUND A NUMBER TO N DECIMALS
 
 function round(number, decimalPlaces) {
-    const factorOfTen = Math.pow(10, decimalPlaces);
-    return Math.round(number * factorOfTen) / factorOfTen
+  const factorOfTen = Math.pow(10, decimalPlaces);
+  return Math.round(number * factorOfTen) / factorOfTen
 }
 
-// SUBSTRACT N DAYS TO A GIVEN DAY
+// CONVERT yyyy/MM/dd to unixtime (in ms or s)
 
-function getRightDate(daysToRemove, locale) {
-  let output;
-  let date = new Date();
-  date.setDate(date.getDate() - daysToRemove);
-  switch(locale) {
-    case "fr-FR":
-      output = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
-      break;
-    case "2":
-      output = date.toISOString().split('T')[0]
-      break;
-  }
-  return output;
+function date2unix(date, returnsInMs) {
+  let o = Date.parse(date, 'yyyy/MM/dd');
+  if (!returnsInMs)
+    o /= 1000;
+  return o;
 }
 
 // CONVERT yyyy/MM/dd TO dd/MM/yyyy
 
 function transformDate(date) {
-    const unixDate = Date.parse(date, 'yyyy/MM/dd');
-    return new Date(unixDate).toLocaleDateString("fr-FR");
+  return new Date(date2unix(date, true)).toLocaleDateString("fr-FR");
 }
+
+// WAIT N MILLISECONDS
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// CONVERT NUMBER TO COLOR
+
 function colorDep(regionSelec, tauxIncidence) {
+  let o;
   if (tauxIncidence === -1) {
-    regionSelec.style = "fill: #FAFAFA;";
+    o = "#FAFAFA"; // broken white
   } else if (tauxIncidence >= 0 && tauxIncidence <= 50) {
-    regionSelec.style = "fill: #ACD1AF;"; // green
+    o = "#ACD1AF"; // green
   } else if (tauxIncidence > 50 && tauxIncidence < 100) {
-    regionSelec.style = "fill: #EEEE9B;"; // yellow
+    o = "#EEEE9B"; // yellow
   } else if (tauxIncidence >= 100 && tauxIncidence < 200) {
-    regionSelec.style = "fill: #F5CA7B;"; // orange
+    o = "#F5CA7B"; // orange
   } else if (tauxIncidence >= 200 && tauxIncidence < 500) {
-    regionSelec.style = "fill: #F47174;"; // red
+    o = "#F47174"; // red
   } else if (tauxIncidence >= 500 && tauxIncidence < 1000) {
-    regionSelec.style = "fill: #8B0000"; // dark red
+    o = "#8B0000"; // dark red
   } else if (tauxIncidence >= 1000 && tauxIncidence < 2000) {
-    regionSelec.style = "fill: #AF8FE9;"; // purple
+    o = "#AF8FE9"; // purple
   } else if (tauxIncidence >= 2000 && tauxIncidence < 3000) {
-    regionSelec.style = "fill: #3F0F4E;" // dark pink
+    o = "#3F0F4E"; // dark pink
   } else if (tauxIncidence >= 3000 && tauxIncidence < 4000) {
-    regionSelec.style = "fill: #AAAAAA;" // grey
+    o = "#AAAAAA"; // grey
   } else if (tauxIncidence >= 4000) {
-    regionSelec.style = "fill: #000000;" // black
+    o = "#000000" // black
   }
+  regionSelec.style = `fill: ${o};`;
 }
 
+// FIXING A BUG THAT HAPPENS SOMETIMES
+
 function fixBugEncoding(name) {
-  let newName = name.replace("Ã¨", "è").replace("Ã´", "ô").replace("Ã©", "é")
-  .replace("Ã©e", "ée");
-  return newName;
+  return name.replace("Ã¨", "è").replace("Ã´", "ô").replace("Ã©", "é")
+    .replace("Ã©e", "ée");
 }
 
 //                       //
@@ -72,31 +70,36 @@ function fixBugEncoding(name) {
 // SETTING MIN AND MAX VALUES
 
 function settingUpValues() {
-  fetch('/EpidAnimDataGatherer/txIncidData.json')
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    const dataArray = Object.keys(data);
-    const firstDay = dataArray[0];
-    const lastDay = dataArray.pop();
-    dpStart.min = firstDay;
-    dpStart.max = lastDay;
-    dpEnd.min = firstDay;
-    dpEnd.max = lastDay;
-  });
-}
-
-function displayLastDayFranceMap() {
-  fetch('/EpidAnimDataGatherer/txIncidData.json')
+  fetch('PropAnimDataGatherer/txIncidData.json')
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
+      const dataArray = Object.keys(data);
+      const firstDay = dataArray[0];
+      const lastDay = dataArray.pop();
+      dpStart.min = firstDay;
+      dpStart.max = lastDay;
+      dpEnd.min = firstDay;
+      dpEnd.max = lastDay;
+    });
+}
+
+// DISPLAYING THE LAST REGISTERED DAY
+
+function displayLastDayFranceMap() {
+  fetch('PropAnimDataGatherer/txIncidData.json')
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      let firstDay = Object.keys(data)[0];
       let lastDay = Object.keys(data).pop();
       let depName;
       let depTxIncid;
-      refreshedDate.textContent = `Dernière actualisation : ${transformDate(lastDay)}`;
+      refreshedDate.innerHTML =
+        `Première donnée : ${transformDate(firstDay)} <br>
+      Dernière donnée : ${transformDate(lastDay)}`;
       data[lastDay].forEach(dep => {
         depName = dep["lib_dep"];
         depName = fixBugEncoding(depName);
@@ -110,38 +113,83 @@ function displayLastDayFranceMap() {
     });
 }
 
-async function displayFranceMapAnimation(startDate, endDate) {
-  fetch('/EpidAnimDataGatherer/txIncidData.json')
-  .then(function (response) {
-    return response.json();
-  })
-  .then(async function (data) {
-    let dataArray = Object.keys(data);
-    let indexStart = dataArray.indexOf(startDate);
-    let indexEnd = dataArray.indexOf(endDate) + 1;
-    if (dpStartValue === "")
-      indexStart = 0;
-    if (dpEndValue === "")
-      indexEnd = dataArray.length;
-    let selectedArray = dataArray.slice(indexStart, indexEnd);
+// REPLACING DATA IF OUT OF BOUNDARIES
 
-    let day;
-    let depName;
-    let depTxIncid;
-    for (let i = 0 ; i < selectedArray.length ; i++) {
-      day = selectedArray[i];
-      currentDisplayedDay.textContent = transformDate(day);
-      data[day].forEach(dep => {
-        depName = dep["lib_dep"];
-        depTxIncid = dep["tx_incid"];
-        depName = fixBugEncoding(depName);
-        regionSelec = document.getElementById(depName);
-        if (regionSelec === null)
-          console.log(`null: ${depName}`);
-        else
-          colorDep(regionSelec, depTxIncid);
-      });
-      await sleep(1000/8);
-    }
+function setValuesLimits() {
+  fetch('PropAnimDataGatherer/txIncidData.json')
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      let firstDay = Object.keys(data)[0];
+      let lastDay = Object.keys(data).pop();
+      dpStartValue = dpStart.value;
+      dpEndValue = dpEnd.value;
+      dpSpeedValue = dpSpeed.value;
+      const unixStart = date2unix(dpStartValue, false); // first given date
+      const unixEnd = date2unix(dpEndValue, false); // second given date
+      const unixFirst = date2unix(firstDay, false); // first registered date
+      const unixLast = date2unix(lastDay, false); // last registered date
+      // given dates between start and end
+      if (unixStart > unixEnd) {
+        alert("La date du début se situe après la date de fin. Veuillez changer les dates données.");
+        window.location.href = "https://homeprojects.flguitt.com/propanim/";
+      }
+      // given dates between registered start and registered end
+      if (unixStart < unixFirst)
+        dpStart.value = firstDay;
+      else if (unixStart > unixLast)
+        dpStart.value = lastDay;
+      else if (unixEnd < unixFirst)
+        dpEnd.value = firstDay;
+      else if (unixEnd > unixLast)
+        dpEnd.value = lastDay;
+      // speed
+      if (dpSpeedValue < 1)
+        dpSpeedValue = 1;
+      else if (dpSpeedValue > 8)
+        dpSpeedValue = 8;
+      dpSpeed.value = dpSpeedValue;
   });
+}
+
+// DISPLAYING ANIMATION BETWEEN 2 GIVEN DATES
+
+async function displayFranceMapAnimation(startDate, endDate, speed, isLoop) {
+  fetch('PropAnimDataGatherer/txIncidData.json')
+    .then(function (response) {
+      return response.json();
+    })
+    .then(async function (data) {
+      let dataArray = Object.keys(data);
+      let indexStart = dataArray.indexOf(startDate);
+      let indexEnd = dataArray.indexOf(endDate) + 1;
+      if (dpStartValue === "")
+        indexStart = 0;
+      if (dpEndValue === "")
+        indexEnd = dataArray.length;
+      let selectedArray = dataArray.slice(indexStart, indexEnd);
+
+      let day;
+      let depName;
+      let depTxIncid;
+      while (1) {
+        for (let i = 0; i < selectedArray.length; i++) {
+          day = selectedArray[i];
+          currentDisplayedDay.textContent = transformDate(day);
+          data[day].forEach(dep => {
+            depName = fixBugEncoding(dep["lib_dep"]);
+            depTxIncid = dep["tx_incid"];
+            regionSelec = document.getElementById(depName);
+            if (regionSelec === null)
+              console.log(`null: ${depName}`);
+            else
+              colorDep(regionSelec, depTxIncid);
+          });
+          await sleep(1000 / speed);
+        }
+        if (!isLoop)
+          break;
+      }
+    });
 }
