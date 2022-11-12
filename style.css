@@ -1,5 +1,31 @@
 /* ALL THE PAGES */
 
+@font-face {
+    font-family: "inter";
+    src: url('https://a.flguitt.com/fonts/Inter-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+:root {
+    font-size: 16px;
+    font-family: "inter", sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
 body {
     background: black;
     color: white;
