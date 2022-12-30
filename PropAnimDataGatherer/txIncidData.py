@@ -16,7 +16,7 @@ currentDay = currentDatetime.day
 currentMonth = currentDatetime.month
 currentYear = currentDatetime.year
 stop_date = int(datetime(currentYear, currentMonth, currentDay).timestamp())
-stop_date -= 86400 * 5
+stop_date -= 86400 * 4
 # 5 days are being substraced because data are available at D-6
 daysLeft = int((stop_date - date_) / 86400)
 print("daysLeft: " + str(daysLeft))
